@@ -1,0 +1,9 @@
+Study Buddy variants (all use the prompt in study-buddy.txt)
+
+Name                       Base model          Notes
+Study Buddy · Fast         qwen3:8b            Quick answers. Small models are less reliable at web search.
+Study Buddy                gemma4:26b          Everyday default.
+Study Buddy · Thoughtful   qwen3.8:27b-mlx     Harder problems, longer explanations. The -mlx build is already shared with the Grace group.
+
+Settings for each: Capabilities: untick Terminal, tick Web Search. Access: Grace group (and Adults) with Read. Save at the bottom of the page.
+When the prompt in study-buddy.txt changes, paste it into every variant. Phase 2 (gateway) is meant to replace the copies with one assistant that has a model setting.
