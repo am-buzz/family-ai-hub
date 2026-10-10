@@ -10,10 +10,16 @@ VENV="$FAMILY_AI_HOME/venv"
 [[ "$(uname -s)" == "Darwin" ]] || { echo "This installer is for macOS." >&2; exit 1; }
 command -v brew >/dev/null || { echo "Install Homebrew first: https://brew.sh" >&2; exit 1; }
 
-echo "==> Installing Ollama, Python 3.11 and Tailscale tooling via Homebrew"
-brew list ollama >/dev/null 2>&1 || brew install ollama
+echo "==> Checking Ollama and Python"
+OLLAMA_RUNNING=0
+if curl -fs --max-time 3 http://127.0.0.1:11434 >/dev/null 2>&1; then
+  OLLAMA_RUNNING=1
+  echo "    Ollama is already running on port 11434 (probably the desktop app). Leaving it alone."
+elif ! command -v ollama >/dev/null 2>&1; then
+  brew install ollama
+fi
 brew list python@3.11 >/dev/null 2>&1 || brew install python@3.11
-# Tailscale: the App Store / standalone app is fine; the CLI must be on PATH for tailscale-serve.sh.
+# Tailscale: the standalone app is fine; the CLI must be on PATH for tailscale-serve.sh.
 
 mkdir -p "$FAMILY_AI_HOME/data" "$FAMILY_AI_HOME/backups" "$FAMILY_AI_HOME/logs"
 chmod 700 "$FAMILY_AI_HOME"
@@ -50,8 +56,10 @@ sed -e "s|__REPO_DIR__|$REPO_DIR|g" -e "s|__HOME__|$HOME|g" \
 launchctl bootout "gui/$(id -u)/com.familyai.openwebui" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
 
-echo "==> Starting Ollama as a background service"
-brew services start ollama
+if [[ "$OLLAMA_RUNNING" == "0" ]]; then
+  echo "==> Starting Ollama as a background service"
+  brew services start ollama
+fi
 
 cat <<MSG
 
