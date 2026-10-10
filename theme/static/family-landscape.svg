@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 520" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f86b4"/><stop offset="1" stop-color="#2a6a98"/></linearGradient>
+  </defs>
+  <!-- Alps, with a Mont Blanc dome -->
+  <path d="M0 380 L80 310 L140 345 L250 215 L320 285 L395 245 L500 335 L600 260 L690 315 C760 215 880 190 960 235 C1010 262 1060 300 1100 290 L1180 330 L1290 255 L1370 310 L1450 280 L1600 350 L1600 520 L0 520 Z" fill="#8ea9c8"/>
+  <path d="M250 215 L222 252 L240 246 L252 262 L268 240 L285 252 Z" fill="#f4f7fb"/>
+  <path d="M800 238 C830 205 900 195 950 232 L930 240 L905 226 L880 244 L850 228 Z" fill="#f4f7fb"/>
+  <path d="M1290 255 L1265 285 L1282 280 L1294 294 L1308 276 L1322 286 Z" fill="#f4f7fb"/>
+  <path d="M600 260 L578 288 L594 283 L604 296 L618 280 L632 290 Z" fill="#f4f7fb"/>
+  <!-- hazy ridges -->
+  <path d="M0 410 C150 360 260 400 420 395 C600 390 700 350 900 380 C1100 410 1250 340 1400 360 C1500 372 1560 390 1600 385 L1600 520 L0 520 Z" fill="#7f9fb5"/>
+  <path d="M0 440 C200 400 330 440 520 430 C760 418 900 380 1100 400 C1300 420 1450 380 1600 400 L1600 520 L0 520 Z" fill="#6f9480"/>
+  <!-- Lake Léman -->
+  <path d="M0 458 C200 444 400 464 640 452 C760 446 830 472 910 520 L0 520 Z" fill="url(#lake)"/>
+  <path d="M60 486 q22 -9 44 0 t44 0 t44 0" fill="none" stroke="#cfe3f0" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  <path d="M300 504 q22 -9 44 0 t44 0 t44 0" fill="none" stroke="#cfe3f0" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+  <path d="M520 482 q22 -9 44 0 t44 0" fill="none" stroke="#cfe3f0" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+  <!-- Jet d'Eau -->
+  <g fill="none" stroke="#e8f1f8" stroke-linecap="round">
+    <path d="M420 456 C419 380 420 330 420 296" stroke-width="6"/>
+    <path d="M420 300 C398 306 384 340 376 392" stroke-width="3.5" opacity=".9"/>
+    <path d="M420 300 C442 306 456 340 464 392" stroke-width="3.5" opacity=".9"/>
+    <path d="M420 312 C404 322 396 352 392 404" stroke-width="2.5" opacity=".7"/>
+    <path d="M420 312 C436 322 444 352 448 404" stroke-width="2.5" opacity=".7"/>
+  </g>
+  <ellipse cx="420" cy="458" rx="34" ry="6" fill="#dbe9f3" opacity=".8"/>
+  <!-- sailboat -->
+  <path d="M640 482 L640 450 L668 482 Z" fill="#f4efe6"/><path d="M634 484 L674 484 L668 491 L640 491 Z" fill="#5b4a3c"/>
+  <!-- Blue Ridge foreground hills (right) -->
+  <path d="M700 520 C800 470 920 440 1060 450 C1220 462 1380 420 1600 440 L1600 520 Z" fill="#587f5a"/>
+  <path d="M980 520 C1080 478 1200 470 1320 478 C1440 486 1520 462 1600 470 L1600 520 Z" fill="#44704f"/>
+  <!-- red barn and silo -->
+  <rect x="1200" y="446" width="64" height="40" fill="#b5372a"/>
+  <path d="M1194 448 L1232 422 L1270 448 Z" fill="#8c2a20"/>
+  <rect x="1222" y="458" width="22" height="28" fill="#c4452f" stroke="#f1e6d6" stroke-width="2"/>
+  <path d="M1222 458 L1244 486 M1244 458 L1222 486" stroke="#f1e6d6" stroke-width="2"/>
+  <rect x="1274" y="430" width="14" height="56" fill="#cfd6dc"/>
+  <path d="M1274 430 q7 -12 14 0 Z" fill="#9aa6b0"/>
+  <!-- split-rail fence -->
+  <g stroke="#4a3b2e" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M1340 486 L1600 472"/><path d="M1340 497 L1600 484"/>
+    <path d="M1352 480 L1352 504 M1412 478 L1412 502 M1472 474 L1472 498 M1532 471 L1532 495 M1592 468 L1592 492"/>
+  </g>
+</svg>

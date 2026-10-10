@@ -39,3 +39,31 @@ body::before {
 }
 
 ::selection { background: oklch(86% 0.07 75); color: oklch(21% 0.034 250); }
+
+/* Landscape: Lac Léman and the Alps (with the Jet d'Eau) on the left, Blue Ridge hills and a red barn on the right.
+   Drawn as a faded layer over the lower part of the page so it works whatever the app's own backgrounds are.
+   Tune the look with the three values below. */
+:root {
+  --landscape-height: min(44vh, 460px);
+  --landscape-opacity: 0.38;
+  --landscape-opacity-dark: 0.38;
+}
+body::after {
+  content: "";
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--landscape-height);
+  background: url("/static/family-landscape.svg") center bottom / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, #000 45%, transparent 100%);
+          mask-image: linear-gradient(to top, #000 0%, #000 45%, transparent 100%);
+  opacity: var(--landscape-opacity);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 99990;
+}
+html.dark body::after { opacity: var(--landscape-opacity-dark); mix-blend-mode: screen; }
+@media (max-width: 640px) {
+  /* phones: show the whole panorama as a strip along the bottom */
+  body::after { height: auto; aspect-ratio: 1600 / 520; background-size: 100% 100%; }
+}
+@media print { body::after, body::before { display: none; } }
