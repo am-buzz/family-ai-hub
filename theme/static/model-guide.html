@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which model should I pick?</title>
+<link rel="icon" href="/static/favicon.png">
+<link rel="stylesheet" href="/static/custom.css">
+<style>
+  :root { color-scheme: light dark; }
+  /* this page is long, so the landscape layer would sit over the card text: leave it off here */
+  body::after { display: none !important; }
+  body { margin: 0; background: var(--color-white, #fff); color: var(--color-gray-800, #223); min-height: 100vh;
+         font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+  @media (prefers-color-scheme: dark) { body { background: var(--color-gray-900, #0b1722); color: var(--color-gray-100, #eee); } }
+  main { max-width: 1180px; margin: 0 auto; padding: 64px 20px 140px; }
+  h1 { margin: 0 0 6px; font-size: 28px; }
+  p.lead { margin: 0 0 18px; max-width: 720px; line-height: 1.5; color: var(--color-gray-600, #556); }
+  @media (prefers-color-scheme: dark) { p.lead { color: var(--color-gray-300, #ccc); } }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+  .chip { border: 1px solid var(--color-gray-300, #ccc); background: transparent; color: inherit; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 13px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: #2b6f9e; border-color: #2b6f9e; color: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+  .card { border-radius: 16px; padding: 16px 16px 14px; background: var(--color-gray-100, #f3f0e8); border: 1px solid var(--color-gray-200, #e6e2d6); display: flex; flex-direction: column; gap: 8px; }
+  @media (prefers-color-scheme: dark) { .card { background: var(--color-gray-850, #14232f); border-color: var(--color-gray-800, #1d3040); } }
+  .card h2 { margin: 0; font-size: 17px; }
+  .id { font: 12px ui-monospace, Menlo, monospace; opacity: .65; word-break: break-all; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+  .pill { border-radius: 999px; padding: 3px 10px; background: color-mix(in oklab, #2b6f9e 16%, transparent); }
+  .pill.cloud { background: color-mix(in oklab, #d52b1e 18%, transparent); }
+  .pill.kind { background: color-mix(in oklab, #c9a45a 28%, transparent); }
+  .good { font-weight: 600; font-size: 14px; line-height: 1.35; }
+  .notes { font-size: 13px; line-height: 1.45; opacity: .85; }
+  .aud { margin-top: auto; font-size: 12px; opacity: .8; }
+  footer { margin-top: 26px; font-size: 12px; opacity: .7; max-width: 720px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Which model should I pick?</h1>
+  <p class="lead">Everything installed on our computer, side by side. Not sure? Start with a <b>Fast</b> or <b>Everyday</b> model and move up if the answers are not good enough. Models marked <b>On this Mac</b> keep everything at home.</p>
+  <div class="bar" id="bar"></div>
+  <div class="grid" id="grid"></div>
+  <footer id="foot"></footer>
+</main>
+<script>
+  // follow the system light/dark setting so the shared theme (name plate, colours) switches too
+  if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark');
+  const KINDS = ['All', 'Everyday', 'Thinking', 'Coding', 'Special'];
+  let all = [], kind = 'All';
+  const el = (t, c, txt) => { const e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
+  function draw() {
+    const g = document.getElementById('grid'); g.replaceChildren();
+    all.filter(m => kind === 'All' || m.kind === kind).forEach(m => {
+      const c = el('div', 'card');
+      c.append(el('h2', '', m.name), el('div', 'id', m.id));
+      const r = el('div', 'row');
+      r.append(el('span', 'pill' + (m.runs === 'cloud' ? ' cloud' : ''), m.runs === 'cloud' ? 'Cloud (leaves this Mac)' : 'On this Mac'));
+      r.append(el('span', 'pill kind', m.kind));
+      r.append(el('span', 'pill', m.speed));
+      if (m.size_gb != null) r.append(el('span', 'pill', (m.size_gb < 1 ? Math.round(m.size_gb * 1000) + ' MB' : m.size_gb + ' GB')));
+      c.append(r, el('div', 'good', m.good_for), el('div', 'notes', m.notes), el('div', 'aud', 'Meant for: ' + m.audience));
+      g.append(c);
+    });
+  }
+  function bar() {
+    const b = document.getElementById('bar'); b.replaceChildren();
+    KINDS.forEach(k => { const x = el('button', 'chip', k); x.setAttribute('aria-pressed', String(k === kind)); x.onclick = () => { kind = k; bar(); draw(); }; b.append(x); });
+  }
+  fetch('/static/models.json', { cache: 'no-store' }).then(r => r.json()).then(d => {
+    all = d.models; bar(); draw();
+    document.getElementById('foot').textContent = 'Sizes are how much of the computer’s memory a model needs. Speeds are estimates from size. Bigger is not always better: a small model that answers in seconds is often the right one.';
+  }).catch(() => { document.getElementById('grid').textContent = 'Could not load the model list.'; });
+</script>
+</body>
+</html>

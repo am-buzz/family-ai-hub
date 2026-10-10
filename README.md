@@ -24,6 +24,7 @@ backup job, retire the old Docker instance, then phase 2 (trust gateway and Info
 - `config/family-ai.env.example`: settings (copied to `~/.family-ai/family-ai.env`, never committed)
 - `config/providers.yaml`: provider registry seed for the phase 2 trust gateway
 - `theme/`: "Lakeside & Blue Ridge" look (custom.css, emblem and app icons); applied at startup by `scripts/apply-theme.sh`
+- `theme/static/model-guide.html` + `models.json`: the "Which model should I pick?" page (served at /static/model-guide.html); `scripts/model-guide-sync.sh` adds stubs for newly downloaded models
 - `scripts/set-name.sh`: sets the hub's name (tab/phone label and the name plate at the top)
 - `launchd/`: job templates
 
