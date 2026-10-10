@@ -24,6 +24,7 @@ backup job, retire the old Docker instance, then phase 2 (trust gateway and Info
 - `config/family-ai.env.example`: settings (copied to `~/.family-ai/family-ai.env`, never committed)
 - `config/providers.yaml`: provider registry seed for the phase 2 trust gateway
 - `theme/`: "Lakeside & Blue Ridge" look (custom.css, emblem and app icons); applied at startup by `scripts/apply-theme.sh`
+- `scripts/set-name.sh`: sets the hub's name (tab/phone label and the name plate at the top)
 - `launchd/`: job templates
 
 ## Ground rules

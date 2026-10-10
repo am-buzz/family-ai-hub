@@ -67,3 +67,36 @@ html.dark body::after { opacity: var(--landscape-opacity-dark); mix-blend-mode: 
   body::after { height: auto; aspect-ratio: 1600 / 520; background-size: 100% 100%; }
 }
 @media print { body::after, body::before { display: none; } }
+
+/* Name plate at the top centre. Change the two values with scripts/set-name.sh. */
+:root {
+  --hub-title: "Lake & Ridge";
+  --hub-subtitle: "Buzatu \00B7  Miller";
+}
+html::before {
+  content: var(--hub-title) "   \2022   " var(--hub-subtitle);
+  position: fixed;
+  top: 9px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 99991;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 6px 16px 6px 42px;
+  border-radius: 999px;
+  font: 600 11.5px/1.2 ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-gray-700);
+  background: url("/static/favicon-96x96.png") 10px center / 22px 22px no-repeat, color-mix(in oklab, var(--color-white) 78%, transparent);
+  box-shadow: 0 1px 8px rgba(30, 60, 90, 0.14);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+html.dark::before {
+  color: var(--color-gray-200);
+  background: url("/static/favicon-96x96.png") 10px center / 22px 22px no-repeat, color-mix(in oklab, var(--color-gray-900) 72%, transparent);
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+/* the top bar is crowded on narrow screens, so the name plate steps aside there */
+@media (max-width: 900px) { html::before { display: none; } }
+@media print { html::before { display: none; } }
