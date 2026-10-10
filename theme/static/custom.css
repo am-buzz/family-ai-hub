@@ -1,0 +1,41 @@
+/* Family AI Hub theme: "Lakeside & Blue Ridge"
+   Warm Alpine-paper lights, deep Lac Léman slate darks, a Swiss-red / lake-blue / hay-gold stripe.
+   Open WebUI builds its whole neutral palette from the --color-gray-* variables, so recolouring
+   those recolours the app in both light and dark mode. No external fonts or images are loaded. */
+
+:root {
+  /* light surfaces: warm paper (hue ~85) */
+  --color-gray-50:  oklch(97.8% 0.008 85);
+  --color-gray-100: oklch(95.5% 0.011 85);
+  --color-gray-200: oklch(92%   0.014 85);
+  --color-gray-300: oklch(85%   0.016 85);
+  /* mid tones: hazy Blue Ridge */
+  --color-gray-400: oklch(76% 0.02  225);
+  --color-gray-500: oklch(67% 0.022 230);
+  --color-gray-600: oklch(52% 0.03  240);
+  /* dark surfaces and ink: lake slate (hue ~250) */
+  --color-gray-700: oklch(42%   0.035 245);
+  --color-gray-800: oklch(32%   0.035 247);
+  --color-gray-850: oklch(27%   0.034 248);
+  --color-gray-900: oklch(21%   0.034 250);
+  --color-gray-950: oklch(16.5% 0.03  252);
+
+  --color-white: oklch(99.2% 0.006 85);
+}
+
+body {
+  font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+}
+
+/* a slim tricolour stripe along the top: Swiss red, Lake Geneva blue, Virginia hay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #d52b1e 0 34%, #2b6f9e 34% 67%, #c9a45a 67% 100%);
+  z-index: 99999;
+  pointer-events: none;
+}
+
+::selection { background: oklch(86% 0.07 75); color: oklch(21% 0.034 250); }

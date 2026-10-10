@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9ec9e8"/>
+      <stop offset="0.62" stop-color="#f6e7c8"/>
+      <stop offset="1" stop-color="#f3d9a4"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b6f9e"/>
+      <stop offset="1" stop-color="#1b4a6e"/>
+    </linearGradient>
+    <clipPath id="tile"><rect width="512" height="512" rx="112"/></clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="512" height="512" fill="url(#sky)"/>
+    <circle cx="372" cy="150" r="42" fill="#ffd98a" opacity="0.95"/>
+    <!-- Alps: far, jagged, snow-capped -->
+    <path d="M-10 330 L90 190 L130 235 L205 120 L270 230 L318 175 L400 270 L470 205 L530 300 L530 400 L-10 400 Z" fill="#6e8fb3"/>
+    <path d="M205 120 L170 172 L192 166 L205 188 L222 160 L240 172 Z" fill="#ffffff" opacity="0.95"/>
+    <path d="M90 190 L66 226 L84 220 L96 236 L112 214 Z" fill="#ffffff" opacity="0.9"/>
+    <!-- Blue Ridge: soft rolling hills -->
+    <path d="M-10 350 C70 300 150 330 230 345 C310 360 390 300 530 335 L530 420 L-10 420 Z" fill="#4f7d6a"/>
+    <path d="M-10 385 C90 345 180 380 270 385 C360 390 430 355 530 380 L530 440 L-10 440 Z" fill="#3c6454"/>
+    <!-- Lake Léman -->
+    <rect x="-10" y="410" width="540" height="120" fill="url(#lake)"/>
+    <path d="M60 442 q24 -12 48 0 t48 0 t48 0" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="7" stroke-linecap="round"/>
+    <path d="M250 472 q24 -12 48 0 t48 0 t48 0" fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="7" stroke-linecap="round"/>
+    <!-- Swiss cross on a little red flag, a nod to Geneva -->
+    <g transform="translate(60 56)">
+      <rect width="84" height="84" rx="14" fill="#d52b1e"/>
+      <rect x="35" y="16" width="14" height="52" fill="#ffffff"/>
+      <rect x="16" y="35" width="52" height="14" fill="#ffffff"/>
+    </g>
+  </g>
+</svg>

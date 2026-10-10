@@ -23,6 +23,7 @@ backup job, retire the old Docker instance, then phase 2 (trust gateway and Info
 - `scripts/backup.sh`, `scripts/restore.sh`, `scripts/install-backup-job.sh`
 - `config/family-ai.env.example`: settings (copied to `~/.family-ai/family-ai.env`, never committed)
 - `config/providers.yaml`: provider registry seed for the phase 2 trust gateway
+- `theme/`: "Lakeside & Blue Ridge" look (custom.css, emblem and app icons); applied at startup by `scripts/apply-theme.sh`
 - `launchd/`: job templates
 
 ## Ground rules
