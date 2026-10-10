@@ -1,0 +1,15 @@
+# Provider registry seed for the phase 2 trust gateway. Not used by phase 1.
+# Never put API keys here: keys live in ~/.family-ai/family-ai.env or the macOS keychain.
+providers:
+  - id: local-ollama
+    kind: ollama
+    base_url: http://127.0.0.1:11434
+    tier: local-only
+    terms_reviewed: n/a
+  - id: infomaniak
+    kind: openai-compatible
+    base_url: ""          # fill in from the Infomaniak console (product-specific URL)
+    tier: approved
+    status: provisional   # owner decision 2026-10-10: treated as approved before terms are read
+    terms_reviewed: null  # TODO: record date, reviewer and link once the terms are read
+    review_by: 2026-11-10 # revisit provisional status by this date
