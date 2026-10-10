@@ -10,12 +10,14 @@ Docs (Word):
 
 ## Status
 
-Phase 1 scaffolding is written but not yet run on the Mac. It has been syntax-checked, and the backup
-and retention logic was tested with fake data. The installer, launchd jobs and Tailscale script have not
-been exercised on macOS yet.
+Phase 1 is running on the owner's Mac: Open WebUI 0.11.0 (migrated from Docker), Ollama, Tailscale HTTPS
+on port 10000, family accounts, Adults and Grace groups, Study Buddy. Still to do: backup drive and
+backup job, retire the old Docker instance, then phase 2 (trust gateway and Infomaniak).
 
 ## Layout
 
+- `assistants/study-buddy.txt`: system prompt for Grace's Study Buddy assistant
+- `scripts/migrate-from-docker.sh`: copies an existing Docker Open WebUI's data across, non-destructively
 - `scripts/install.sh`: installs Ollama and Open WebUI, creates `~/.family-ai`, sets up launchd
 - `scripts/pull-models.sh`, `scripts/tailscale-serve.sh`
 - `scripts/backup.sh`, `scripts/restore.sh`, `scripts/install-backup-job.sh`
