@@ -43,7 +43,8 @@ echo "==> Installing Open WebUI"
 if [[ -f "$REPO_DIR/requirements.lock" ]]; then
   "$VENV/bin/pip" install -r "$REPO_DIR/requirements.lock"
 else
-  "$VENV/bin/pip" install open-webui
+  # OPEN_WEBUI_VERSION=0.11.0 scripts/install.sh   pins a version (use the one your data came from)
+  "$VENV/bin/pip" install "open-webui${OPEN_WEBUI_VERSION:+==$OPEN_WEBUI_VERSION}"
   "$VENV/bin/pip" freeze > "$REPO_DIR/requirements.lock"
   echo "    Wrote requirements.lock. Commit it so upgrades are deliberate."
 fi
