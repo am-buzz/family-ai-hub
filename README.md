@@ -10,7 +10,7 @@ Docs (Word):
 
 ## Status
 
-Phase 1 is running on the owner's Mac: Open WebUI 0.11.0 (migrated from Docker), Ollama, Tailscale HTTPS
+Phase 1 is running on the owner's Mac: Open WebUI 0.12.0 (migrated from Docker, upgraded from 0.11.4), Ollama, Tailscale HTTPS
 on port 10000, family accounts, Adults and Grace groups, Study Buddy. Still to do: backup drive and
 backup job, retire the old Docker instance, then phase 2 (trust gateway and Infomaniak).
 

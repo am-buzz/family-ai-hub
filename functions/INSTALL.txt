@@ -1,5 +1,5 @@
 Study Buddy pipe: install and test
-(Open WebUI 0.11.4 and 0.12.0 behave the same for this.)
+(Written for Open WebUI 0.12.0, which the hub now runs.)
 
 Do all of this on the NEW Open WebUI: http://127.0.0.1:8080  (the tab should say "Family AI Hub").
 
