@@ -1,8 +1,8 @@
 """
 title: Study Buddy (choose model)
 author: family-ai-hub
-version: 0.2.0
-description: One Study Buddy assistant. Each person chooses which model answers (Fast, Standard, Thoughtful, or an Infomaniak cloud model) in Chat Controls > Valves. Cloud choices are blocked for the people listed under "local_only_emails".
+version: 0.3.0
+description: One Study Buddy assistant that appears in the model picker once per brain (Fast, Standard, Thoughtful, Apertus 8B, Infomaniak cloud models), so switching models is just picking another entry. An entry named plain Study Buddy follows the Brain setting in Chat Controls. Cloud choices are blocked for the people listed under "local_only_emails".
 """
 
 import json
@@ -44,6 +44,18 @@ Using web search:
 
 CLOUD_LABELS = ("Cloud: Apertus 70B", "Cloud: Mistral 119B")
 
+# Entries shown in the model picker: (id, name shown, brain label or None = follow Chat Controls).
+# Open WebUI turns each id into "<function id>.<id>", which arrives as body["model"].
+PICKER = [
+    ("choose", "Study Buddy", None),
+    ("fast", "Study Buddy · Fast", "Fast"),
+    ("standard", "Study Buddy · Standard", "Standard"),
+    ("thoughtful", "Study Buddy · Thoughtful", "Thoughtful"),
+    ("apertus-8b", "Study Buddy · Apertus 8B", "Apertus 8B"),
+    ("cloud-apertus", "Study Buddy · Apertus 70B (cloud)", "Cloud: Apertus 70B"),
+    ("cloud-mistral", "Study Buddy · Mistral 119B (cloud)", "Cloud: Mistral 119B"),
+]
+
 
 class Pipe:
     class Valves(BaseModel):
@@ -80,6 +92,16 @@ class Pipe:
 
     def __init__(self):
         self.valves = self.Valves()
+
+    def pipes(self):
+        """The entries Open WebUI lists in the model picker."""
+        return [{"id": i, "name": n} for i, n, _ in PICKER]
+
+    @staticmethod
+    def brain_from_model(model_id: Optional[str]) -> Optional[str]:
+        """Which brain the picker entry stands for (None for plain 'Study Buddy' or unknown ids)."""
+        key = (model_id or "").rsplit(".", 1)[-1]
+        return {i: label for i, _, label in PICKER}.get(key)
 
     # ----- helpers (kept free of Open WebUI imports so they can be tested on their own) -----
     def model_for(self, label: str) -> str:
@@ -138,7 +160,7 @@ class Pipe:
 
         user_dict = __user__ or {}
         user_valves = user_dict.get("valves")
-        requested = getattr(user_valves, "brain", None) or "Standard"
+        requested = self.brain_from_model(body.get("model")) or getattr(user_valves, "brain", None) or "Standard"
         email = user_dict.get("email")
 
         payload = {**body}

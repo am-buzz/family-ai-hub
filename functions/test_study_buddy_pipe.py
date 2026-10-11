@@ -90,4 +90,13 @@ schema = Pipe.UserValves.model_json_schema()
 check("brain is a dropdown with 6 choices", len(schema["properties"]["brain"]["enum"]) == 6)
 master = (Path(__file__).resolve().parent.parent / "assistants" / "study-buddy.txt").read_text().strip()
 check("embedded prompt equals assistants/study-buddy.txt", Pipe().valves.system_prompt == master)
+# 9 picker entries: each id selects its brain, and the Controls setting is the fallback
+check("picker lists 7 entries, plain Study Buddy first", [e["name"] for e in Pipe().pipes()][0] == "Study Buddy" and len(Pipe().pipes()) == 7)
+for pid, model in [("fast", "qwen3:8b"), ("thoughtful", "qwen3.8:27b-mlx"), ("apertus-8b", "apertus1.5-8b-text:f16"), ("cloud-mistral", "mistralai/Mistral-Small-4-119B-2603")]:
+    _, fd = run({**base, "model": "study_buddy_pipe." + pid}, {"_valves": {"brain": "Standard"}})
+    check(f"picker entry {pid} -> {model}", fd["model"] == model)
+_, fd = run({**base, "model": "study_buddy_pipe.choose"}, {"_valves": {"brain": "Fast"}})
+check("plain Study Buddy follows the Controls setting", fd["model"] == "qwen3:8b")
+_, fd = run({**base, "model": "study_buddy_pipe.cloud-apertus"}, {"email": "keithmiller1975+grace@gmail.com"})
+check("restricted account picking a cloud entry still falls back locally", fd["model"] == "gemma4:26b" and "not available" in events[0]["data"]["description"])
 print(f"\nAll {ok} checks passed")

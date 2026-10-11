@@ -18,23 +18,33 @@ STEP 4. Check its settings (browser)
     Click the gear icon on the function and check that the six model IDs match your installed models exactly.
     "local_only_emails" lists the accounts that may only use local models (Grace's login is already there).
 
-STEP 5. Give people access to it (browser)
-    Admin Panel > Settings > Models, open "Study Buddy (choose model)", click Access,
-    add the Grace and Adults groups with Read, close the box, then click Save at the BOTTOM of the page.
+STEP 5. Give people access to the picker entries (browser)
+    Version 0.3.0 adds seven entries to the model picker. After saving the function, go to
+    Admin Panel > Settings > Models and find these (they start with "Study Buddy"):
+      Study Buddy                          everyone (follows the Brain setting in Chat Controls)
+      Study Buddy · Fast                   everyone
+      Study Buddy · Standard               everyone
+      Study Buddy · Thoughtful             everyone
+      Study Buddy · Apertus 8B             everyone
+      Study Buddy · Apertus 70B (cloud)    Adults only (not Grace)
+      Study Buddy · Mistral 119B (cloud)   Adults only (not Grace)
+    For each: open it, click Access, add the group(s) with Read, then click Save at the BOTTOM of the page.
+    An entry with no access is invisible to everyone but you, so leaving Grace off the cloud entries hides them from her.
 
-STEP 6. Give people access to the models behind the choices (browser)
+STEP 6. Give people access to the models behind the entries (browser)
     The pipe runs each model as the signed-in person, so they need Read access to the models too:
-      everyone (Grace and Adults): qwen3:8b, gemma4:26b, qwen3.8:27b-mlx
+      everyone (Grace and Adults): qwen3:8b, gemma4:26b, qwen3.8:27b-mlx, apertus1.5-8b-text:f16
       only people allowed to use cloud models: swiss-ai/Apertus-v1.5-70B, mistralai/Mistral-Small-4-119B-2603
     Admin Panel > Settings > Models > open the model > Access > add the group > Save at the bottom.
 
 STEP 7. Test as yourself (browser)
-    New chat, pick "Study Buddy (choose model)", open Chat Controls (sliders icon, top right) > Valves,
-    choose a Brain and ask a question. A status line under the answer says which model replied and where it ran.
-    Try each Brain, including a Cloud one.
+    New chat. Click the model name at the top and pick "Study Buddy · Fast". Ask a question.
+    A status line under the answer says which model replied and where it ran.
+    Switch to another entry from the same picker, in the same chat, and ask again.
 
 STEP 8. Test as Grace (browser, private window)
-    Sign in as Grace, choose a Cloud brain. She should get a notice and an answer from a local model.
+    Sign in as Grace. She should see the five local entries and no cloud entries.
+    (If she somehow reaches a cloud entry, the pipe still answers with a local model and says so.)
 
 STEP 9. When you are happy
     Remove the three older Study Buddy assistants (or just take away their group access).
