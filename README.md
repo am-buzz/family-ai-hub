@@ -16,6 +16,7 @@ backup job, retire the old Docker instance, then phase 2 (trust gateway and Info
 
 ## Layout
 
+- `functions/`: the Study Buddy pipe (one assistant, each person picks the model) with tests and INSTALL.txt
 - `assistants/study-buddy.txt`: system prompt for Grace's Study Buddy assistant
 - `scripts/migrate-from-docker.sh`: copies an existing Docker Open WebUI's data across, non-destructively
 - `scripts/install.sh`: installs Ollama and Open WebUI, creates `~/.family-ai`, sets up launchd
