@@ -1,6 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 520" preserveAspectRatio="xMidYMax slice">
   <defs>
     <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f86b4"/><stop offset="1" stop-color="#2a6a98"/></linearGradient>
+    <g id="pup" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-7 -9 C-10 -11 -9 -15 -6 -14" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M-5.5 -5 v5 M-3 -5 v5 M3 -5 v5 M5.5 -5 v5" stroke="currentColor" stroke-width="1.8" fill="none"/>
+      <ellipse cx="0" cy="-8" rx="8" ry="4.2" fill="currentColor"/>
+      <circle cx="8" cy="-11" r="3.4" fill="currentColor"/>
+      <ellipse cx="11.4" cy="-10" rx="2.4" ry="1.7" fill="currentColor"/>
+      <path d="M6.2 -13.6 L5 -9.8 L8 -11.4 Z" fill="#000" opacity=".28"/>
+    </g>
+    <g id="pup-lying" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-7 -4 C-10 -5 -10 -8 -7.5 -8" fill="none" stroke="currentColor" stroke-width="2"/>
+      <ellipse cx="0" cy="-4" rx="8" ry="3.6" fill="currentColor"/>
+      <circle cx="7.6" cy="-6" r="3.3" fill="currentColor"/>
+      <ellipse cx="10.8" cy="-4.8" rx="2.4" ry="1.6" fill="currentColor"/>
+      <path d="M5.8 -8.6 L4.8 -4.8 L7.6 -6.4 Z" fill="#000" opacity=".28"/>
+    </g>
   </defs>
   <!-- Alps, with a Mont Blanc dome -->
   <path d="M0 380 L80 310 L140 345 L250 215 L320 285 L395 245 L500 335 L600 260 L690 315 C760 215 880 190 960 235 C1010 262 1060 300 1100 290 L1180 330 L1290 255 L1370 310 L1450 280 L1600 350 L1600 520 L0 520 Z" fill="#8ea9c8"/>
@@ -37,6 +52,15 @@
   <path d="M1222 458 L1244 486 M1244 458 L1222 486" stroke="#f1e6d6" stroke-width="2"/>
   <rect x="1274" y="430" width="14" height="56" fill="#cfd6dc"/>
   <path d="M1274 430 q7 -12 14 0 Z" fill="#9aa6b0"/>
+  <!-- the Virginia pups: one black, five tan with a little grey -->
+  <g id="pups">
+    <use href="#pup" transform="translate(1118 499)" color="#26262a"/>
+    <use href="#pup" transform="translate(1150 504) scale(-1 1)" color="#b79c76"/>
+    <use href="#pup-lying" transform="translate(1176 506)" color="#a69580"/>
+    <use href="#pup" transform="translate(1205 500)" color="#bda37f"/>
+    <use href="#pup" transform="translate(1236 503) scale(-1 1)" color="#a89b84"/>
+    <use href="#pup-lying" transform="translate(1262 500) scale(-1 1)" color="#b39c7c"/>
+  </g>
   <!-- split-rail fence -->
   <g stroke="#4a3b2e" stroke-width="3" stroke-linecap="round" fill="none">
     <path d="M1340 486 L1600 472"/><path d="M1340 497 L1600 484"/>
