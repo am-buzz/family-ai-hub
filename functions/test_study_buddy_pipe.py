@@ -55,7 +55,7 @@ check("default uses Standard model", fd["model"] == "gemma4:26b")
 check("system prompt added first", fd["messages"][0]["role"] == "system" and "Study Buddy" in fd["messages"][0]["content"])
 check("user message kept after it", fd["messages"][1]["content"] == "hello" and base["messages"] == [{"role": "user", "content": "hello"}])
 # 2 each choice maps to the right model
-for label, model in [("Fast", "qwen3:8b"), ("Thoughtful", "qwen3.8:27b-mlx"), ("Cloud: Apertus 70B", "swiss-ai/Apertus-v1.5-70B"), ("Cloud: Mistral 119B", "mistralai/Mistral-Small-4-119B-2603")]:
+for label, model in [("Fast", "qwen3:8b"), ("Thoughtful", "qwen3.8:27b-mlx"), ("Apertus 8B", "apertus1.5-8b-text:f16"), ("Cloud: Apertus 70B", "swiss-ai/Apertus-v1.5-70B"), ("Cloud: Mistral 119B", "mistralai/Mistral-Small-4-119B-2603")]:
     _, fd = run(base, {"_valves": {"brain": label}})
     check(f"{label} -> {model}", fd["model"] == model)
 # 3 restricted account cannot reach the cloud, falls back, tells the user
@@ -64,6 +64,8 @@ check("restricted account falls back to default local model", fd["model"] == "ge
 check("user is told about the fallback", "not available for this account" in events[0]["data"]["description"])
 _, fd = run(base, {"email": "keithmiller1975+grace@gmail.com", "_valves": {"brain": "Thoughtful"}})
 check("restricted account may still pick local models", fd["model"] == "qwen3.8:27b-mlx")
+_, fd = run(base, {"email": "keithmiller1975+grace@gmail.com", "_valves": {"brain": "Apertus 8B"}})
+check("restricted account may use Apertus 8B (local)", fd["model"] == "apertus1.5-8b-text:f16")
 # 4 existing system message (memory/RAG context) is kept, persona goes in front
 withsys = {**base, "messages": [{"role": "system", "content": "CONTEXT: notes"}, {"role": "user", "content": "q"}]}
 _, fd = run(withsys, {})
@@ -85,7 +87,7 @@ out, _ = run(base, {}, result="stream")
 check("streaming response passed through untouched", hasattr(out, "body_iterator"))
 # 8 the form shows dropdowns, and the embedded prompt matches the master copy
 schema = Pipe.UserValves.model_json_schema()
-check("brain is a dropdown with 5 choices", len(schema["properties"]["brain"]["enum"]) == 5)
+check("brain is a dropdown with 6 choices", len(schema["properties"]["brain"]["enum"]) == 6)
 master = (Path(__file__).resolve().parent.parent / "assistants" / "study-buddy.txt").read_text().strip()
 check("embedded prompt equals assistants/study-buddy.txt", Pipe().valves.system_prompt == master)
 print(f"\nAll {ok} checks passed")

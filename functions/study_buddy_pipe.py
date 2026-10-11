@@ -1,7 +1,7 @@
 """
 title: Study Buddy (choose model)
 author: family-ai-hub
-version: 0.1.0
+version: 0.2.0
 description: One Study Buddy assistant. Each person chooses which model answers (Fast, Standard, Thoughtful, or an Infomaniak cloud model) in Chat Controls > Valves. Cloud choices are blocked for the people listed under "local_only_emails".
 """
 
@@ -53,6 +53,9 @@ class Pipe:
         model_fast: str = Field(default="qwen3:8b", description="Model ID for 'Fast' (also used for titles and tags).")
         model_standard: str = Field(default="gemma4:26b", description="Model ID for 'Standard'.")
         model_thoughtful: str = Field(default="qwen3.8:27b-mlx", description="Model ID for 'Thoughtful'.")
+        model_apertus_8b: str = Field(
+            default="apertus1.5-8b-text:f16", description="Model ID for 'Apertus 8B' (local, the Swiss open model)."
+        )
         model_cloud_apertus: str = Field(
             default="swiss-ai/Apertus-v1.5-70B", description="Model ID for 'Cloud: Apertus 70B' (Infomaniak)."
         )
@@ -70,9 +73,9 @@ class Pipe:
     class UserValves(BaseModel):
         """Each person's own setting (Chat Controls > Valves)."""
 
-        brain: Literal["Fast", "Standard", "Thoughtful", "Cloud: Apertus 70B", "Cloud: Mistral 119B"] = Field(
+        brain: Literal["Fast", "Standard", "Thoughtful", "Apertus 8B", "Cloud: Apertus 70B", "Cloud: Mistral 119B"] = Field(
             default="Standard",
-            description="Which model answers. Fast = quick, Thoughtful = slower and deeper, Cloud = runs at Infomaniak (leaves this Mac).",
+            description="Which model answers. Fast = quick, Thoughtful = slower and deeper, Apertus 8B = the Swiss open model (local), Cloud = runs at Infomaniak (leaves this Mac).",
         )
 
     def __init__(self):
@@ -84,6 +87,7 @@ class Pipe:
             "Fast": self.valves.model_fast,
             "Standard": self.valves.model_standard,
             "Thoughtful": self.valves.model_thoughtful,
+            "Apertus 8B": self.valves.model_apertus_8b,
             "Cloud: Apertus 70B": self.valves.model_cloud_apertus,
             "Cloud: Mistral 119B": self.valves.model_cloud_mistral,
         }[label]

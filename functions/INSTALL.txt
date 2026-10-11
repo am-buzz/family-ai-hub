@@ -15,7 +15,7 @@ STEP 3. Add the function (browser)
     Then switch the function to Active.
 
 STEP 4. Check its settings (browser)
-    Click the gear icon on the function and check that the five model IDs match your installed models exactly.
+    Click the gear icon on the function and check that the six model IDs match your installed models exactly.
     "local_only_emails" lists the accounts that may only use local models (Grace's login is already there).
 
 STEP 5. Give people access to it (browser)
