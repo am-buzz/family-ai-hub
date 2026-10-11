@@ -1,18 +1,45 @@
-Study Buddy pipe: install and test (Open WebUI 0.11.4 and 0.12.0 behave the same for this)
+Study Buddy pipe: install and test
+(Open WebUI 0.11.4 and 0.12.0 behave the same for this.)
 
-1. Copy the code:       pbcopy < ~/family-ai-hub/functions/study_buddy_pipe.py
-2. Admin Panel > Functions > + (new function). Select all existing text, paste, Save, confirm the warning.
-   Switch the function to Active.
-3. Gear icon on the function: check the five model IDs match your installed models exactly. local_only_emails lists
-   accounts that may only use local models (Grace's login email is preset).
-4. Admin Panel > Settings > Models: open "Study Buddy (choose model)", Access: add the Grace and Adults groups (Read), Save at the bottom.
-   The pipe asks Open WebUI to run the chosen model as the signed-in person, so each person also needs Read access to the
-   models behind the choices: qwen3:8b, gemma4:26b, qwen3.8:27b-mlx for everyone; the two Infomaniak models only for people
-   who may use cloud models.
-5. Test as yourself: new chat, pick the pipe, open Chat Controls (sliders icon, top right) > Valves, choose a Brain, ask a question.
-   A status line under the answer says which model replied and where it ran.
-6. Test as Grace (private window): choose a Cloud brain; she should get the fallback notice and an answer from a local model.
-7. When happy, remove the three older Study Buddy assistants (or just their group access).
+Do all of this on the NEW Open WebUI: http://127.0.0.1:8080  (the tab should say "Family AI Hub").
 
-To change the prompt: edit assistants/study-buddy.txt, run  python3 functions/build_study_buddy.py , test with
-python3 functions/test_study_buddy_pipe.py , then paste the new code into the function (0.12.0 keeps version history).
+STEP 1. Get the latest files (Terminal)
+    cd ~/family-ai-hub && git pull
+
+STEP 2. Copy the code to the clipboard (Terminal)
+    pbcopy < ~/family-ai-hub/functions/study_buddy_pipe.py
+
+STEP 3. Add the function (browser)
+    Admin Panel > Functions > the + button (new function).
+    Select all the text already in the editor, paste, click Save, and confirm the warning.
+    Then switch the function to Active.
+
+STEP 4. Check its settings (browser)
+    Click the gear icon on the function and check that the five model IDs match your installed models exactly.
+    "local_only_emails" lists the accounts that may only use local models (Grace's login is already there).
+
+STEP 5. Give people access to it (browser)
+    Admin Panel > Settings > Models, open "Study Buddy (choose model)", click Access,
+    add the Grace and Adults groups with Read, close the box, then click Save at the BOTTOM of the page.
+
+STEP 6. Give people access to the models behind the choices (browser)
+    The pipe runs each model as the signed-in person, so they need Read access to the models too:
+      everyone (Grace and Adults): qwen3:8b, gemma4:26b, qwen3.8:27b-mlx
+      only people allowed to use cloud models: swiss-ai/Apertus-v1.5-70B, mistralai/Mistral-Small-4-119B-2603
+    Admin Panel > Settings > Models > open the model > Access > add the group > Save at the bottom.
+
+STEP 7. Test as yourself (browser)
+    New chat, pick "Study Buddy (choose model)", open Chat Controls (sliders icon, top right) > Valves,
+    choose a Brain and ask a question. A status line under the answer says which model replied and where it ran.
+    Try each Brain, including a Cloud one.
+
+STEP 8. Test as Grace (browser, private window)
+    Sign in as Grace, choose a Cloud brain. She should get a notice and an answer from a local model.
+
+STEP 9. When you are happy
+    Remove the three older Study Buddy assistants (or just take away their group access).
+
+To change the prompt later: edit assistants/study-buddy.txt, then
+    python3 functions/build_study_buddy.py
+    python3 functions/test_study_buddy_pipe.py
+and paste the new code into the function (Open WebUI 0.12.0 keeps a version history you can roll back).
