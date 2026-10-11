@@ -53,14 +53,3 @@ To change the prompt later: edit assistants/study-buddy.txt, then
     python3 functions/build_study_buddy.py
     python3 functions/test_study_buddy_pipe.py
 and paste the new code into the function (Open WebUI 0.12.0 keeps a version history you can roll back).
-
-
-EXPERIMENT: Study Buddy mode (a switch instead of a separate assistant)
-  Pick any model in the normal picker; flip "Study Buddy mode" on in the message bar to get Study Buddy's personality.
-  1. cd ~/family-ai-hub && git pull
-  2. open -e ~/family-ai-hub/functions/study_buddy_mode.py   (Cmd+A, Cmd+C, copy nothing else afterwards)
-  3. Admin Panel > Functions > + (new function). Select all, paste, Save, confirm. Switch it to Active. Leave "Global" OFF.
-  4. Admin Panel > Settings > Models > open qwen3:8b > under Filters tick "Study Buddy mode" > Save at the bottom.
-     Repeat for gemma4:26b, qwen3.8:27b-mlx and apertus1.5-8b-text:f16 (and the cloud models for adults, if wanted).
-  5. New chat, pick qwen3:8b. Click + in the message bar > Integrations: the "Study Buddy mode" switch should be there. Turn it on and chat.
-  Notes: it adds the instructions only. Knowledge bases and the Grace local-only lock stay with the models and the pipe.
