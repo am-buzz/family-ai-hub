@@ -23,6 +23,12 @@
   <path d="M800 238 C830 205 900 195 950 232 L930 240 L905 226 L880 244 L850 228 Z" fill="#f4f7fb"/>
   <path d="M1290 255 L1265 285 L1282 280 L1294 294 L1308 276 L1322 286 Z" fill="#f4f7fb"/>
   <path d="M600 260 L578 288 L594 283 L604 296 L618 280 L632 290 Z" fill="#f4f7fb"/>
+  <!-- little Swiss flag on the left slope of the second mountain -->
+  <g id="swiss-flag">
+    <path d="M351 272 L351 245" stroke="#4a3b2e" stroke-width="1.6" stroke-linecap="round"/>
+    <rect x="335.5" y="246" width="15" height="15" fill="#d52b1e"/>
+    <path d="M341.8 248.4 h2.4 v4 h4 v2.4 h-4 v4 h-2.4 v-4 h-4 v-2.4 h4 Z" fill="#fff"/>
+  </g>
   <!-- hazy ridges -->
   <path d="M0 410 C150 360 260 400 420 395 C600 390 700 350 900 380 C1100 410 1250 340 1400 360 C1500 372 1560 390 1600 385 L1600 520 L0 520 Z" fill="#7f9fb5"/>
   <path d="M0 440 C200 400 330 440 520 430 C760 418 900 380 1100 400 C1300 420 1450 380 1600 400 L1600 520 L0 520 Z" fill="#6f9480"/>
