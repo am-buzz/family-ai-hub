@@ -1,0 +1,40 @@
+Office Export tool: lets a model make Word, Excel and PowerPoint files and hand you a download link.
+Do all of this on the NEW Open WebUI: http://127.0.0.1:8080 (the tab says "Family AI Hub").
+
+STEP 1. Get the latest files and the three Python packages (Terminal)
+    cd ~/family-ai-hub && git pull
+    ~/.family-ai/venv/bin/pip install -r requirements-extras.txt
+    launchctl kickstart -k gui/$(id -u)/com.familyai.openwebui
+
+STEP 2. Copy the code (Terminal). Close any TextEdit window showing this file first.
+    open -e ~/family-ai-hub/tools/office_export.py
+    In TextEdit press Cmd+A, then Cmd+C. Copy nothing else afterwards.
+
+STEP 3. Add the tool (browser)
+    Workspace > Tools > the + button (new tool).
+    Click in the code box, select all, paste. Check that line 2 says "title: Office Export (Word, Excel, PowerPoint)".
+    Click Save and confirm the warning.
+
+STEP 4. Choose who may use it (browser)
+    On the Tools page, open the tool's access settings (lock or share icon). Add the Adults group, or just yourself.
+    Leave Grace off: tools run code on the Mac.
+
+STEP 5. Turn it on for a chat (browser)
+    New chat, pick a model that handles tools (MiniMax M3.1 Flash, Gemma 4, Qwen3). Click + in the message bar,
+    open Tools and switch "Office Export" on.
+    If the model ignores the tool: Chat Controls (sliders icon) > Advanced Params > Function Calling > Native.
+    (The local Apertus 8B build cannot call tools.)
+
+STEP 6. Try it
+    "Write a one-page briefing on <topic> as a Word document."
+    "Make an Excel budget with rent, food and phone, with a total row."
+    "Turn this into a 6 slide PowerPoint."
+    The model replies with a "Download ..." link. Click it to save the file, then open it in Word, Excel or PowerPoint.
+
+Settings (the gear icon on the tool): colours, the small label in headers and footers, A4 or Letter paper.
+Tips: ask for the document in the same message as the content, say who it is for, and mention if you want tables or a summary at the top.
+For Excel, ask for one table per sheet if you want formulas; cell references count from the table's header (row 1).
+
+To change the design later: edit tools/office_export.py, run
+    python3 tools/test_office_export.py /tmp/oe_test
+and paste the new code into the tool (Open WebUI keeps a version history you can roll back).

@@ -17,6 +17,8 @@ backup job, retire the old Docker instance, then phase 2 (trust gateway and Info
 ## Layout
 
 - `functions/`: the Study Buddy pipe (one assistant, each person picks the model) with tests and INSTALL.txt
+- `tools/`: the Office Export tool (a model makes Word, Excel and PowerPoint files and returns a download link) with tests and INSTALL.txt; `requirements-extras.txt` lists its Python packages
+- `scripts/upgrade.sh`: backup, then upgrade Open WebUI to a chosen version and restart
 - `assistants/study-buddy.txt`: system prompt for Grace's Study Buddy assistant
 - `scripts/migrate-from-docker.sh`: copies an existing Docker Open WebUI's data across, non-destructively
 - `scripts/install.sh`: installs Ollama and Open WebUI, creates `~/.family-ai`, sets up launchd

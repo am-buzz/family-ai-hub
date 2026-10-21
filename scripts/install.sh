@@ -49,6 +49,9 @@ else
   echo "    Wrote requirements.lock. Commit it so upgrades are deliberate."
 fi
 
+echo "==> Installing extra packages for the tools in tools/"
+"$VENV/bin/pip" install -r "$REPO_DIR/requirements-extras.txt"
+
 echo "==> Installing launchd job for Open WebUI"
 PLIST="$HOME/Library/LaunchAgents/com.familyai.openwebui.plist"
 mkdir -p "$HOME/Library/LaunchAgents"

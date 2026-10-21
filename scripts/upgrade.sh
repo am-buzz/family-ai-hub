@@ -29,6 +29,7 @@ fi
 echo "==> Installing"
 PKG="open-webui${TARGET:+==$TARGET}"
 "$VENV/bin/pip" install --upgrade "$PKG"
+"$VENV/bin/pip" install -r "$REPO_DIR/requirements-extras.txt"
 NEW="$("$VENV/bin/pip" show open-webui | awk '/^Version:/ {print $2}')"
 "$VENV/bin/pip" freeze > "$REPO_DIR/requirements.lock"
 echo "    Installed $NEW and refreshed requirements.lock (commit it when you are happy)."
