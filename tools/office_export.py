@@ -16,13 +16,14 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 # =====================================================================================================
-# Look and feel. "Lake & Ridge": lake blue, alpine red, ridge green, on warm white. Colours are hex strings.
+# Look and feel: neutral and professional. Clean sans-serif type, blue-gray headings, light grey rules.
+# The colours can be changed in the tool's settings. Family touches (label, title-slide ridge and flag) are opt-in.
 # =====================================================================================================
 INK = "1F2A37"
 MUTED = "6B7785"
-RULE = "C9D6E2"
-TINT = "EAF1F7"
-ZEBRA = "F4F8FB"
+RULE = "CBD3DC"
+TINT = "EDF1F5"
+ZEBRA = "F5F7FA"
 GREEN = "587F5A"
 WARM_FILL = "FDF1E7"
 WARM_EDGE = "E07B1F"
@@ -186,6 +187,12 @@ def slug(text: str, fallback: str = "document") -> str:
 
 
 NUMERIC = re.compile(r"^[\s$€£¥]*[-+]?[\d.,]+\s*%?\s*(CHF|USD|EUR)?\s*$", re.I)
+
+
+def mix(hex_a: str, hex_b: str, t: float) -> str:
+    """Blend two hex colours; t=0 gives a, t=1 gives b."""
+    a, b = [tuple(int(h[i : i + 2], 16) for i in (0, 2, 4)) for h in (hex_a, hex_b)]
+    return "".join(f"{round(x + (y - x) * t):02X}" for x, y in zip(a, b))
 
 
 def clamp(n, lo, hi):
@@ -381,16 +388,16 @@ def build_docx(title, subtitle, content, author, valves) -> bytes:
     set_font(st["Normal"], "Calibri", 11, INK)
     st["Normal"].paragraph_format.space_after = Pt(7)
     st["Normal"].paragraph_format.line_spacing = 1.18
-    for name, font, size, color, before, after in (
-        ("Heading 1", "Georgia", 20, accent, 22, 8),
-        ("Heading 2", "Georgia", 15, accent, 16, 5),
-        ("Heading 3", "Calibri", 12.5, INK, 12, 3),
+    for name, font, size, color, before, after, bold in (
+        ("Heading 1", "Calibri Light", 20, accent, 22, 8, False),
+        ("Heading 2", "Calibri Light", 15.5, accent, 16, 5, False),
+        ("Heading 3", "Calibri", 12.5, mix(accent, INK, 0.45), 12, 3, True),
     ):
-        set_font(st[name], font, size, color, bold=True, italic=False)
+        set_font(st[name], font, size, color, bold=bold, italic=False)
         pf = st[name].paragraph_format
         pf.space_before, pf.space_after, pf.keep_with_next = Pt(before), Pt(after), True
         strip_borders(st[name])
-    set_font(st["Title"], "Georgia", 28, INK, bold=True)
+    set_font(st["Title"], "Calibri Light", 28, mix(accent, INK, 0.6), bold=False)
     strip_borders(st["Title"])
     st["Title"].paragraph_format.space_after = Pt(4)
     st["Title"].paragraph_format.line_spacing = 1.0
@@ -401,22 +408,23 @@ def build_docx(title, subtitle, content, author, valves) -> bytes:
         st[name].paragraph_format.space_after = Pt(3)
 
     # ---- title block ---------------------------------------------------------------------------
-    author_line = " · ".join(x for x in (f"Prepared by {author}" if author else "", f"{dt.date.today().day} {dt.date.today():%B %Y}") if x)
+    author_line = " · ".join(x for x in (f"Prepared by {author}" if author else "", f"{dt.date.today().day} {dt.date.today():%B %Y}") if x) if valves.add_byline else ""
     if title:
-        kick = doc.add_paragraph()
-        kick.paragraph_format.space_after = Pt(6)
-        kr = kick.add_run((valves.header_label or "").upper())
-        kr.font.size, kr.font.bold = Pt(9), True
-        kr.font.color.rgb = rgb(hi)
-        kr._r.get_or_add_rPr().append(_spacing(OxmlElement, qn, 50))
+        if valves.header_label:
+            kick = doc.add_paragraph()
+            kick.paragraph_format.space_after = Pt(6)
+            kr = kick.add_run(valves.header_label.upper())
+            kr.font.size, kr.font.bold = Pt(9), True
+            kr.font.color.rgb = rgb(accent)
+            kr._r.get_or_add_rPr().append(_spacing(OxmlElement, qn, 50))
         tp = doc.add_paragraph(plain(title), style="Title")
         if subtitle:
             doc.add_paragraph(plain(subtitle), style="Subtitle")
         meta = doc.add_paragraph()
         meta.paragraph_format.space_after = Pt(14)
-        mr = meta.add_run(author_line)
-        mr.font.size, mr.font.color.rgb = Pt(9.5), rgb(MUTED)
-        para_border(meta, "bottom", accent, size=18, space=8)
+        mr = meta.add_run(author_line or " ")
+        mr.font.size, mr.font.color.rgb = Pt(9.5 if author_line else 4), rgb(MUTED)
+        para_border(meta, "bottom", accent, size=12, space=8)
 
     # ---- header / footer -----------------------------------------------------------------------
     sec.different_first_page_header_footer = True
@@ -634,7 +642,9 @@ def build_xlsx(title, content, author, valves) -> bytes:
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
 
-    accent, hi = valves.accent_color, valves.highlight_color
+    # Excel keeps its original look and rules, independent of the Word and PowerPoint colours.
+    accent, hi = valves.excel_accent_color, valves.excel_highlight_color
+    RULE, TINT, ZEBRA = "C9D6E2", "EAF1F7", "F4F8FB"
     blocks = parse_blocks(content)
     level = 2 if any(b[0] == "heading" and b[1] == 2 for b in blocks) else 1
     wb_title, sheets, cur = None, [], None
@@ -765,7 +775,8 @@ def build_xlsx(title, content, author, valves) -> bytes:
         ws.sheet_properties.pageSetUpPr.fitToPage = True
         ws.print_options.horizontalCentered = True
         ws.oddFooter.center.text = "Page &P of &N"
-        ws.oddFooter.right.text = valves.header_label or ""
+        if valves.header_label:
+            ws.oddFooter.right.text = valves.header_label
     wb.properties.title = wb_title or (plain(title) if title else "")  # the title lives in the file properties, not in a cell
     wb.properties.creator = author or "family-ai-hub"
     buf = io.BytesIO()
@@ -789,7 +800,7 @@ def build_pptx(title, subtitle, content, author, valves) -> bytes:
 
     accent, hi = valves.accent_color, valves.highlight_color
     C = lambda h: RGBColor.from_string(h.upper())
-    NAVY = "17384F"
+    NAVY = mix(accent, "0B1620", 0.62)  # a deep shade of the accent for the title slide
     prs = Presentation()
     prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
     W, H = prs.slide_width, prs.slide_height
@@ -863,26 +874,28 @@ def build_pptx(title, subtitle, content, author, valves) -> bytes:
             shp.shadow.inherit = False
             return shp
 
-        ridge([(0, 1), (0, .78), (.07, .70), (.12, .74), (.2, .60), (.27, .68), (.34, .64), (.44, .76), (.54, .66), (.62, .72), (.7, .58), (.78, .68), (.86, .62), (1, .74), (1, 1)], "245B7E")
-        ridge([(0, 1), (0, .90), (.1, .85), (.2, .88), (.33, .82), (.46, .89), (.6, .84), (.75, .90), (.88, .85), (1, .89), (1, 1)], GREEN)
-        # small Swiss flag on the highest peak
-        fx, fy = int(.70 * W), int(.58 * H)
-        pole = rect(s, fx - Inches(0.01), fy - Inches(0.46), Inches(0.02), Inches(0.46), "E9EEF3")
-        flag = rect(s, fx + Inches(0.02), fy - Inches(0.46), Inches(0.26), Inches(0.26), "D52B1E")
-        rect(s, fx + Inches(0.13) - Inches(0.015), fy - Inches(0.46) + Inches(0.05), Inches(0.03), Inches(0.16), "FFFFFF")
-        rect(s, fx + Inches(0.075), fy - Inches(0.46) + Inches(0.115), Inches(0.12), Inches(0.03), "FFFFFF")
+        if valves.show_family_art:  # opt-in: ridge line with a little Swiss flag on the highest peak
+            ridge([(0, 1), (0, .78), (.07, .70), (.12, .74), (.2, .60), (.27, .68), (.34, .64), (.44, .76), (.54, .66), (.62, .72), (.7, .58), (.78, .68), (.86, .62), (1, .74), (1, 1)], "245B7E")
+            ridge([(0, 1), (0, .90), (.1, .85), (.2, .88), (.33, .82), (.46, .89), (.6, .84), (.75, .90), (.88, .85), (1, .89), (1, 1)], GREEN)
+            fx, fy = int(.70 * W), int(.58 * H)
+            rect(s, fx - Inches(0.01), fy - Inches(0.46), Inches(0.02), Inches(0.46), "E9EEF3")
+            rect(s, fx + Inches(0.02), fy - Inches(0.46), Inches(0.26), Inches(0.26), "D52B1E")
+            rect(s, fx + Inches(0.13) - Inches(0.015), fy - Inches(0.46) + Inches(0.05), Inches(0.03), Inches(0.16), "FFFFFF")
+            rect(s, fx + Inches(0.075), fy - Inches(0.46) + Inches(0.115), Inches(0.12), Inches(0.03), "FFFFFF")
         rect(s, Inches(0.9), Inches(1.7), Inches(0.9), Inches(0.09), hi)
-        _, tf = add_text(s, Inches(0.85), Inches(0.9), Inches(9), Inches(0.5))
-        runs(tf.paragraphs[0], (valves.header_label or "").upper(), 13, "9FC3DC", bold=True)
+        if valves.header_label:
+            _, tf = add_text(s, Inches(0.85), Inches(0.9), Inches(9), Inches(0.5))
+            runs(tf.paragraphs[0], valves.header_label.upper(), 13, mix(accent, "FFFFFF", 0.6), bold=True)
         _, tf = add_text(s, Inches(0.85), Inches(2.0), Inches(11.4), Inches(2.0), MSO_ANCHOR.TOP)
-        runs(tf.paragraphs[0], deck_title, 44, "FFFFFF", "Georgia", bold=True)
+        runs(tf.paragraphs[0], deck_title, 44, "FFFFFF", "Calibri Light")
         if subtitle:
             p = tf.add_paragraph()
             p.space_before = Pt(10)
-            runs(p, plain(subtitle), 22, "CFE0EC")
-        meta = " · ".join(x for x in (author, f"{dt.date.today().day} {dt.date.today():%B %Y}") if x)
-        _, tf = add_text(s, Inches(0.85), Inches(3.75), Inches(8), Inches(0.4))
-        runs(tf.paragraphs[0], meta, 14, "9FC3DC")
+            runs(p, plain(subtitle), 22, mix(accent, "FFFFFF", 0.75))
+        if valves.add_byline:
+            meta = " · ".join(x for x in (author, f"{dt.date.today().day} {dt.date.today():%B %Y}") if x)
+            _, tf = add_text(s, Inches(0.85), Inches(3.75), Inches(8), Inches(0.4))
+            runs(tf.paragraphs[0], meta, 14, mix(accent, "FFFFFF", 0.6))
         return s
 
     def chrome(slide, title_text):
@@ -897,7 +910,7 @@ def build_pptx(title, subtitle, content, author, valves) -> bytes:
         par = tf.paragraphs[0]
         par.alignment = PP_ALIGN.LEFT
         size = 34 if len(title_text) <= 40 else 28 if len(title_text) <= 70 else 24
-        runs(par, title_text, size, INK, "Georgia", bold=True)
+        runs(par, title_text, size, mix(accent, INK, 0.6), "Calibri Light")
         ln = rect(slide, Inches(0.85), Inches(1.55), Inches(11.7), Pt(1.2), RULE)
         _, ftf = add_text(slide, Inches(0.85), Inches(6.98), Inches(9), Inches(0.35))
         runs(ftf.paragraphs[0], deck_title, 10.5, MUTED)
@@ -917,7 +930,7 @@ def build_pptx(title, subtitle, content, author, valves) -> bytes:
         s.background.fill.fore_color.rgb = C(accent)
         rect(s, Inches(0.9), Inches(3.0), Inches(0.9), Inches(0.09), "FFFFFF")
         _, tf = add_text(s, Inches(0.85), Inches(3.3), Inches(11.4), Inches(2.0))
-        runs(tf.paragraphs[0], text, 40, "FFFFFF", "Georgia", bold=True)
+        runs(tf.paragraphs[0], text, 40, "FFFFFF", "Calibri Light")
         return s
 
     def flow_slide(title_text, items, note):
@@ -963,7 +976,7 @@ def build_pptx(title, subtitle, content, author, valves) -> bytes:
         rect(s, Inches(0.85), Inches(2.1), Inches(11.7), Inches(3.6), TINT)
         rect(s, Inches(0.85), Inches(2.1), Inches(0.12), Inches(3.6), hi)
         _, tf = add_text(s, Inches(1.35), Inches(2.3), Inches(10.8), Inches(3.2), MSO_ANCHOR.MIDDLE)
-        runs(tf.paragraphs[0], text, 30, INK, "Georgia", italic=False)
+        runs(tf.paragraphs[0], text, 30, mix(accent, INK, 0.6), "Calibri Light")
         notes(s, note)
 
     def table_slides(title_text, rows, intro, note):
@@ -1068,9 +1081,13 @@ class Tools:
     class Valves(BaseModel):
         """Admin settings."""
 
-        header_label: str = Field(default="Buzatu · Miller family", description="Small label printed in headers, footers and on title slides.")
-        accent_color: str = Field(default="2A6A98", description="Main colour as 6 hex digits (lake blue).")
-        highlight_color: str = Field(default="D52B1E", description="Accent for rules and highlights as 6 hex digits (alpine red).")
+        header_label: str = Field(default="", description="Optional small label for headers, footers and title slides on every file (for example a team or family name). Leave empty for plain documents.")
+        accent_color: str = Field(default="3E5C76", description="Main colour as 6 hex digits (blue-gray). Used for headings, table headers and slides.")
+        highlight_color: str = Field(default="7C9CBA", description="Lighter accent as 6 hex digits, used for rules, bullets and underlines.")
+        excel_accent_color: str = Field(default="2A6A98", description="Excel only: header colour as 6 hex digits (the original lake blue). Excel keeps its own look.")
+        excel_highlight_color: str = Field(default="D52B1E", description="Excel only: the line under the header row as 6 hex digits (the original alpine red).")
+        show_family_art: bool = Field(default=False, description="Add the mountain ridge and little Swiss flag to PowerPoint title slides.")
+        add_byline: bool = Field(default=False, description="Add 'Prepared by <name> · <date>' under Word titles and on title slides.")
         paper_size: Literal["A4", "Letter"] = Field(default="A4", description="Page size for Word documents.")
         max_input_chars: int = Field(default=150000, description="Longest text accepted for one file.")
 
@@ -1079,6 +1096,10 @@ class Tools:
         self.citation = False  # the result is a download link, not a source
 
     # ----- helpers --------------------------------------------------------------------------------
+    def _settings(self, label: str = ""):
+        """The admin settings, with the optional per-document label applied."""
+        return self.valves.model_copy(update={"header_label": (label or "").strip() or self.valves.header_label})
+
     def _clean(self, text: str) -> str:
         text = text or ""
         if len(text) > self.valves.max_input_chars:
@@ -1112,7 +1133,7 @@ class Tools:
         )
 
     # ----- Word -----------------------------------------------------------------------------------
-    async def create_word_document(self, title: str, content: str, subtitle: str = "", __user__: Optional[dict] = None, __event_emitter__=None) -> str:
+    async def create_word_document(self, title: str, content: str, subtitle: str = "", label: str = "", __user__: Optional[dict] = None, __event_emitter__=None) -> str:
         """
         Create a polished Word (.docx) document and return a download link.
         Use it when the user asks for a document, report, briefing, letter, memo, meeting notes or handout as a Word file.
@@ -1134,17 +1155,18 @@ class Tools:
         :param title: The document title, for example "Briefing: The Swiss Cloud Debate".
         :param content: The body of the document in Markdown, without the title.
         :param subtitle: Optional one-line subtitle shown under the title.
+        :param label: Optional small label for the header and footer, such as a team or company name. Leave empty unless the user asks for one.
         :return: A message containing the download link to show to the user.
         """
         try:
             user = __user__ or {}
-            data = await asyncio.to_thread(build_docx, title, subtitle, self._clean(content), user.get("name", ""), self.valves)
+            data = await asyncio.to_thread(build_docx, title, subtitle, self._clean(content), user.get("name", ""), self._settings(label))
             return await self._save(data, f"{slug(title)}.docx", DOCX_MIME, user, __event_emitter__)
         except Exception as e:  # reported to the model so it can fix its input
             return f"Could not create the Word document: {e}"
 
     # ----- Excel ----------------------------------------------------------------------------------
-    async def create_excel_workbook(self, title: str, content: str, __user__: Optional[dict] = None, __event_emitter__=None) -> str:
+    async def create_excel_workbook(self, title: str, content: str, label: str = "", __user__: Optional[dict] = None, __event_emitter__=None) -> str:
         """
         Create a formatted Excel (.xlsx) workbook and return a download link.
         Use it when the user asks for a spreadsheet, table, budget, tracker, schedule or list as an Excel file.
@@ -1161,17 +1183,18 @@ class Tools:
 
         :param title: The workbook title, for example "Household Budget 2026".
         :param content: The sheets as Markdown: "## Sheet name" headings, each followed by a table.
+        :param label: Optional small label for the print footer. Leave empty unless the user asks for one.
         :return: A message containing the download link to show to the user.
         """
         try:
             user = __user__ or {}
-            data = await asyncio.to_thread(build_xlsx, title, self._clean(content), user.get("name", ""), self.valves)
+            data = await asyncio.to_thread(build_xlsx, title, self._clean(content), user.get("name", ""), self._settings(label))
             return await self._save(data, f"{slug(title, 'spreadsheet')}.xlsx", XLSX_MIME, user, __event_emitter__)
         except Exception as e:
             return f"Could not create the Excel workbook: {e}"
 
     # ----- PowerPoint -----------------------------------------------------------------------------
-    async def create_powerpoint(self, title: str, content: str, subtitle: str = "", __user__: Optional[dict] = None, __event_emitter__=None) -> str:
+    async def create_powerpoint(self, title: str, content: str, subtitle: str = "", label: str = "", __user__: Optional[dict] = None, __event_emitter__=None) -> str:
         """
         Create a designed PowerPoint (.pptx) presentation and return a download link.
         Use it when the user asks for slides, a deck or a presentation.
@@ -1188,11 +1211,12 @@ class Tools:
         :param title: The presentation title.
         :param content: The slides as Markdown.
         :param subtitle: Optional subtitle shown on the title slide.
+        :param label: Optional small label for the title slide, such as a team or company name. Leave empty unless the user asks for one.
         :return: A message containing the download link to show to the user.
         """
         try:
             user = __user__ or {}
-            data = await asyncio.to_thread(build_pptx, title, subtitle, self._clean(content), user.get("name", ""), self.valves)
+            data = await asyncio.to_thread(build_pptx, title, subtitle, self._clean(content), user.get("name", ""), self._settings(label))
             return await self._save(data, f"{slug(title, 'presentation')}.pptx", PPTX_MIME, user, __event_emitter__)
         except Exception as e:
             return f"Could not create the presentation: {e}"

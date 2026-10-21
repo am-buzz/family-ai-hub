@@ -31,7 +31,15 @@ STEP 6. Try it
     "Turn this into a 6 slide PowerPoint."
     The model replies with a "Download ..." link. Click it to save the file, then open it in Word, Excel or PowerPoint.
 
-Settings (the gear icon on the tool): colours, the small label in headers and footers, A4 or Letter paper.
+Settings (the gear icon on the tool):
+    - Word and PowerPoint are neutral by default: clean Calibri type, blue-gray headings, no label, no byline.
+    - header_label: an optional small label for every file (a team or family name). You can also just ask the model, for example
+      "add the label Acme Team", and it passes the label for that one file.
+    - add_byline: adds "Prepared by <name> and the date" under Word titles and on title slides.
+    - show_family_art: adds the mountain ridge and little Swiss flag to PowerPoint title slides.
+    - accent_color / highlight_color: the Word and PowerPoint colours (6 hex digits).
+    - excel_accent_color / excel_highlight_color: Excel keeps its own look (lake-blue header, thin red line under it).
+    - paper_size: A4 or Letter for Word.
 Tips: ask for the document in the same message as the content, say who it is for, and mention if you want tables or a summary at the top.
 For Excel, ask for one table per sheet if you want formulas; cell references count from the table's header (row 1).
 

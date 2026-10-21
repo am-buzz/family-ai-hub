@@ -78,7 +78,7 @@ DOC = """# Briefing: The Swiss Cloud Debate
 code block line
 ```
 """
-r = asyncio.run(tools.create_word_document("Briefing: The Swiss Cloud Debate", DOC, "Prepared for the family", user, emit))
+r = asyncio.run(tools.create_word_document("Briefing: The Swiss Cloud Debate", DOC, "Prepared for the family", __user__=user, __event_emitter__=emit))
 check("word: reports success with a download link", "Done." in r and "/api/v1/files/" in r and ".docx" in r)
 fid = list(saved)[-1]
 check("word: file registered for the right user with the right type", saved[fid]["user"] == "u1" and saved[fid]["form"].meta["content_type"] == oe.DOCX_MIME)
@@ -113,7 +113,7 @@ Some text above the table.
 | Ben | 7.5 |
 | Evil | =HYPERLINK("http://x.test","click") |
 """
-r = asyncio.run(tools.create_excel_workbook("Household Budget 2026", XL, user, emit))
+r = asyncio.run(tools.create_excel_workbook("Household Budget 2026", XL, __user__=user, __event_emitter__=emit))
 check("excel: success + link", "Done." in r and ".xlsx" in r)
 fid = list(saved)[-1]
 import openpyxl
@@ -152,7 +152,7 @@ Notes: Start with the sovereignty point, then ask the audience.
 
 ## A long slide
 """ + "\n".join(f"- Point number {i} with a fairly long sentence so that the slide must split into several parts safely" for i in range(1, 12))
-r = asyncio.run(tools.create_powerpoint("The Swiss Cloud Debate", PP, "A short briefing", user, emit))
+r = asyncio.run(tools.create_powerpoint("The Swiss Cloud Debate", PP, "A short briefing", __user__=user, __event_emitter__=emit))
 check("pptx: success + link", "Done." in r and ".pptx" in r)
 fid = list(saved)[-1]
 from pptx import Presentation
@@ -165,7 +165,17 @@ check("pptx: a table slide exists", any(sh.has_table for s in pr.slides for sh i
 
 # errors are returned to the model as text, never raised
 long = "x" * (oe.Tools().valves.max_input_chars + 1)
-r = asyncio.run(tools.create_word_document("T", long, "", user))
+r = asyncio.run(tools.create_word_document("T", long, "", __user__=user))
 check("too-long input returns a readable error", r.startswith("Could not create the Word document"))
 check("filenames are safe", oe.slug('Bad/Name: "x"?*') == "BadName x")
+# 10 neutral by default; labels and flair are opt-in; Excel keeps its own look
+check("word: no label or byline by default", "BUZATU" not in " ".join(p.text.upper() for p in d.paragraphs) and "Prepared by" not in " ".join(p.text for p in d.paragraphs))
+check("word: headings use clean Calibri type", d.styles["Heading 1"].font.name == "Calibri Light" and d.styles["Title"].font.name == "Calibri Light")
+check("word: headings are blue-gray", str(d.styles["Heading 1"].font.color.rgb) == "3E5C76")
+r = asyncio.run(tools.create_word_document("Labelled", "## A\ntext", label="Acme Team", __user__=user))
+d2 = Document(list(saved.values())[-1]["form"].path)
+check("word: an optional per-document label appears when asked for", any(p.text == "ACME TEAM" for p in d2.paragraphs))
+ws = openpyxl.load_workbook([v for v in saved.values() if v["form"].filename.endswith(".xlsx")][0]["form"].path)["Monthly"]
+check("excel keeps its original header colour", ws.cell(1, 1).fill.fgColor.rgb.endswith("2A6A98"))
+check("excel has no label in the footer unless asked", not ws.oddFooter.right.text)
 print(f"\nAll {ok} checks passed. Files are in {OUT}")
