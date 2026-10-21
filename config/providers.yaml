@@ -19,3 +19,16 @@ providers:
     # Admin decision 2026-10-11: the owner is comfortable with Infomaniak-hosted models receiving her own
     # memories, knowledge and chats. Other family members are told before their data can reach it (see the PRD).
     may_receive_private_data: true
+  - id: ollama-cloud
+    kind: ollama
+    base_url: http://127.0.0.1:11434   # reached through the local Ollama app, which forwards :cloud models to Ollama's servers
+    tier: unvetted
+    status: provisional   # added 2026-10-21 for admin testing of minimax-m3.1-flash:cloud
+    terms_reviewed: null  # TODO: read Ollama's privacy policy and cloud terms, then record date and link
+    review_by: 2026-11-21
+    # Ollama states (privacy policy, March 2026) that prompts and responses are processed transiently, not stored and not used for
+    # training; hosting is mainly US, with possible routing to Europe and Singapore. Vendor claims, not independently verified.
+    # These models look local in the picker because they go through the local Ollama connection. Keep them labelled "(cloud)".
+    may_receive_private_data: false
+    models: [minimax-m3.1-flash:cloud, gemma4:31b-cloud]
+

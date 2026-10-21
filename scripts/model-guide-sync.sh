@@ -19,7 +19,7 @@ for line in os.environ['OLLAMA_LIST'].splitlines()[1:]:
     size = None
     m = re.search(r'([\d.]+)\s*(GB|MB)', line)
     if m: size = round(float(m.group(1)) / (1000 if m.group(2) == 'MB' else 1), 2)
-    cloud = ':cloud' in name or ' - ' in line
+    cloud = ':cloud' in name or name.endswith('-cloud') or ' - ' in line
     data['models'].append({'id': name, 'name': name, 'runs': 'cloud' if cloud else 'local', 'size_gb': size, 'speed': 'Medium',
         'kind': 'Everyday', 'good_for': 'TODO: what is it good for?', 'notes': 'TODO: describe this model.', 'audience': 'Admin only'})
     added.append(name)

@@ -176,6 +176,28 @@
       "good_for": "Strong general answers from the largest Mistral model on Infomaniak.",
       "notes": "Despite 'Small' in the name, about 119B parameters according to its name. Hosted by Infomaniak. Anything you send leaves this Mac. Not yet tested here.",
       "audience": "Admin only (testing)"
+    },
+    {
+      "id": "minimax-m3.1-flash:cloud",
+      "name": "MiniMax M3.1 Flash (cloud)",
+      "kind": "Thinking",
+      "runs": "cloud",
+      "size_gb": null,
+      "speed": "Fast",
+      "good_for": "Coding, agent-style tasks and long documents (about 1M tokens of context). Can read images.",
+      "notes": "Runs on Ollama's servers (mainly US), not on this Mac. Ollama says prompts are not stored or used for training; not independently verified. Do not use it for private family documents. Pay-as-you-go after the free period.",
+      "audience": "Admin only (testing)"
+    },
+    {
+      "id": "gemma4:31b-cloud",
+      "name": "Gemma 4 31B (cloud)",
+      "kind": "Everyday",
+      "runs": "cloud",
+      "size_gb": null,
+      "speed": "Fast",
+      "good_for": "Everyday questions and web research, with more power than the local Gemma.",
+      "notes": "Runs on Ollama's servers, not on this Mac. Looks like a local model in the picker, so check the label. Do not use it for private family documents.",
+      "audience": "Admin only (testing)"
     }
   ]
 }
